@@ -4,9 +4,11 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
 #include <gtk/gtk.h>
+#include <iostream>
 #include <cstdio>
 #include <cstring>
 #include <ctime>
+#include <opencv2/imgproc/imgproc.hpp>
 
 using namespace std;
 using namespace cv;
@@ -28,11 +30,11 @@ struct ChData {
 		*sc_disp_max_diff, *sc_speckle_range, *sc_speckle_window_size,
 		*sc_p1, *sc_p2, *sc_pre_filter_cap, *sc_pre_filter_size,
 		*sc_uniqueness_ratio, *sc_texture_threshold,
-		*rb_pre_filter_normalized, *rb_pre_filter_xsobel, *chk_full_dp;
+		*rb_pre_filter_normalized, *rb_pre_filter_xsobel, *chk_full_dp, *sc_scale;
 	GtkAdjustment *adj_block_size, *adj_min_disparity, *adj_num_disparities,
 	*adj_disp_max_diff, *adj_speckle_range, *adj_speckle_window_size,
 	*adj_p1, *adj_p2, *adj_pre_filter_cap, *adj_pre_filter_size,
-	*adj_uniqueness_ratio, *adj_texture_threshold;
+	*adj_uniqueness_ratio, *adj_texture_threshold, *adj_scale;
 	GtkWidget *status_bar;
 	gint status_bar_context;
 
@@ -55,6 +57,7 @@ struct ChData {
 	int p1;
 	int p2;
 	int mode;
+  double scale;
 
 	Rect *roi1, *roi2;
 
@@ -76,6 +79,7 @@ struct ChData {
 	static const int DEFAULT_P1 = 0;
 	static const int DEFAULT_P2 = 0;
 	static const int DEFAULT_MODE = StereoSGBM::MODE_SGBM;
+  static constexpr double DEFAULT_SCALE = 2.0;
 
 	ChData() : matcher_type(BM), block_size(DEFAULT_BLOCK_SIZE), disp_12_max_diff(DEFAULT_DISP_12_MAX_DIFF), min_disparity(DEFAULT_MIN_DISPARITY),
 			num_disparities(DEFAULT_NUM_DISPARITIES), speckle_range(DEFAULT_SPECKLE_RANGE),
@@ -83,7 +87,7 @@ struct ChData {
 			pre_filter_size(DEFAULT_PRE_FILTER_SIZE), pre_filter_type(DEFAULT_PRE_FILTER_TYPE),
 			texture_threshold(DEFAULT_TEXTURE_THRESHOLD),
 			uniqueness_ratio(DEFAULT_UNIQUENESS_RATIO), p1(DEFAULT_P1), p2(DEFAULT_P2),
-			mode(DEFAULT_MODE), roi1(NULL), roi2(NULL), live_update(true)
+			mode(DEFAULT_MODE), roi1(NULL),scale(DEFAULT_SCALE), roi2(NULL), live_update(true)
 		{}
 };
 
@@ -115,6 +119,7 @@ void update_matcher(ChData *data) {
 			gtk_widget_set_sensitive(data->sc_pre_filter_size, true);
 			gtk_widget_set_sensitive(data->sc_uniqueness_ratio, true);
 			gtk_widget_set_sensitive(data->sc_texture_threshold, true);
+			gtk_widget_set_sensitive(data->sc_scale, true);
 			gtk_widget_set_sensitive(data->rb_pre_filter_normalized, true);
 			gtk_widget_set_sensitive(data->rb_pre_filter_xsobel, true);
 			gtk_widget_set_sensitive(data->chk_full_dp, false);
@@ -165,6 +170,7 @@ void update_matcher(ChData *data) {
 			gtk_widget_set_sensitive(data->sc_pre_filter_size, false);
 			gtk_widget_set_sensitive(data->sc_uniqueness_ratio, true);
 			gtk_widget_set_sensitive(data->sc_texture_threshold, false);
+			gtk_widget_set_sensitive(data->sc_scale, true);
 			gtk_widget_set_sensitive(data->rb_pre_filter_normalized, false);
 			gtk_widget_set_sensitive(data->rb_pre_filter_xsobel, false);
 			gtk_widget_set_sensitive(data->chk_full_dp, true);
@@ -187,8 +193,15 @@ void update_matcher(ChData *data) {
 
 	clock_t t;
 	t = clock();
-	data->stereo_matcher->compute(data->cv_image_left, data->cv_image_right,
+  std::cout<<"computing disparity map\n";
+  cv::Mat left_image_scaled;
+  cv::Mat right_image_scaled;
+
+  cv::resize(data->cv_image_left, left_image_scaled, cv::Size{}, 1/data->scale, 1/data->scale);
+  cv::resize(data->cv_image_right, right_image_scaled, cv::Size{}, 1/data->scale, 1/data->scale);
+	data->stereo_matcher->compute(left_image_scaled, right_image_scaled,
 			data->cv_image_disparity);
+  std::cout<<"computed disparity map\n";
 	t = clock() - t;
 
 	gchar *status_message = g_strdup_printf("Disparity computation took %lf milliseconds",((double)t*1000)/CLOCKS_PER_SEC);
@@ -197,9 +210,10 @@ void update_matcher(ChData *data) {
 	g_free(status_message);
 
 	normalize(data->cv_image_disparity, data->cv_image_disparity_normalized, 0,
-			255, CV_MINMAX, CV_8UC1);
+			255, cv::NORM_MINMAX, CV_8UC1);
 	cvtColor(data->cv_image_disparity_normalized, data->cv_color_image,
-			CV_GRAY2RGB);
+			cv::COLOR_GRAY2BGR);
+  cv::resize(data->cv_color_image, data->cv_color_image, cv::Size{533,300});
 	GdkPixbuf *pixbuf = gdk_pixbuf_new_from_data(
 			(guchar*) data->cv_color_image.data, GDK_COLORSPACE_RGB, false,
 			8, data->cv_color_image.cols,
@@ -230,6 +244,7 @@ void update_interface(ChData *data) {
 	gtk_adjustment_set_value(data->adj_pre_filter_size,data->pre_filter_size);
 	gtk_adjustment_set_value(data->adj_uniqueness_ratio,data->uniqueness_ratio);
 	gtk_adjustment_set_value(data->adj_texture_threshold,data->texture_threshold);
+	gtk_adjustment_set_value(data->adj_scale,data->scale);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->chk_full_dp),data->mode == StereoSGBM::MODE_HH);
 
 	if(data->pre_filter_type == StereoBM::PREFILTER_NORMALIZED_RESPONSE) {
@@ -444,6 +459,19 @@ G_MODULE_EXPORT void on_adj_texture_threshold_value_changed( GtkAdjustment *adju
 	value = (gint) gtk_adjustment_get_value( adjustment );
 
 	data->texture_threshold = value;
+	update_matcher(data);
+}
+G_MODULE_EXPORT void on_adj_scale_value_changed( GtkAdjustment *adjustment, ChData *data ) {
+	gdouble value;
+
+	if (data == NULL) {
+		fprintf(stderr,"WARNING: data is null\n");
+		return;
+	}
+
+	value = (gdouble) gtk_adjustment_get_value( adjustment );
+
+	data->scale= value;
 	update_matcher(data);
 }
 
@@ -723,10 +751,12 @@ int main(int argc, char *argv[]) {
 		printf("Left and right images have different sizes.\n");
 		exit(1);
 	}
+  std::cout<< "images where loaded correctly\n";
 
 	Mat gray_left, gray_right;
-	cvtColor(left_image,gray_left,CV_BGR2GRAY);
-	cvtColor(right_image,gray_right,CV_BGR2GRAY);
+	cvtColor(left_image,gray_left,cv::COLOR_BGR2GRAY);
+	cvtColor(right_image,gray_right,cv::COLOR_BGR2GRAY);
+  std::cout<< "images where converted correctly\n";
 
 	/* Create data */
 	data = new ChData();
@@ -816,6 +846,7 @@ int main(int argc, char *argv[]) {
 	data->sc_pre_filter_size = GTK_WIDGET(gtk_builder_get_object(builder, "sc_pre_filter_size"));
 	data->sc_uniqueness_ratio = GTK_WIDGET(gtk_builder_get_object(builder, "sc_uniqueness_ratio"));
 	data->sc_texture_threshold = GTK_WIDGET(gtk_builder_get_object(builder, "sc_texture_threshold"));
+	data->sc_scale= GTK_WIDGET(gtk_builder_get_object(builder, "sc_scale"));
 	data->rb_pre_filter_normalized = GTK_WIDGET(gtk_builder_get_object(builder, "rb_pre_filter_normalized"));
 	data->rb_pre_filter_xsobel = GTK_WIDGET(gtk_builder_get_object(builder, "rb_pre_filter_xsobel"));
 	data->chk_full_dp = GTK_WIDGET(gtk_builder_get_object(builder, "chk_full_dp"));
@@ -835,14 +866,18 @@ int main(int argc, char *argv[]) {
 	data->adj_uniqueness_ratio = GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adj_uniqueness_ratio"));
 	data->adj_texture_threshold = GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adj_texture_threshold"));
 	data->status_bar_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(data->status_bar), "Statusbar context");
+	data->adj_scale= GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adj_scale"));
+
 
 	//Put images in place:
 	//gtk_image_set_from_file(data->image_left, left_filename);
 	//gtk_image_set_from_file(data->image_right, right_filename);
 
+  std::cout << "setting RGB image for UI\n";
 	Mat leftRGB, rightRGB;
 	cvtColor(left_image, leftRGB,
-			CV_BGR2RGB);
+			cv::COLOR_BGR2RGB);
+  cv::resize(leftRGB, leftRGB, cv::Size{533,300});
 	GdkPixbuf *pixbuf = gdk_pixbuf_new_from_data(
 			(guchar*) leftRGB.data, GDK_COLORSPACE_RGB, false,
 			8, leftRGB.cols,
@@ -851,7 +886,8 @@ int main(int argc, char *argv[]) {
 	gtk_image_set_from_pixbuf(data->image_left, pixbuf);
 
 	cvtColor(right_image, rightRGB,
-			CV_BGR2RGB);
+			cv::COLOR_BGR2RGB);
+  cv::resize(rightRGB, rightRGB, cv::Size{533,300});
 	pixbuf = gdk_pixbuf_new_from_data(
 			(guchar*) rightRGB.data, GDK_COLORSPACE_RGB, false,
 			8, rightRGB.cols,
@@ -859,6 +895,7 @@ int main(int argc, char *argv[]) {
 			NULL, NULL);
 	gtk_image_set_from_pixbuf(data->image_right, pixbuf);
 
+  std::cout << "set RGB image for UI\n";
 	update_matcher(data);
 
 	/* Connect signals */
@@ -871,6 +908,7 @@ int main(int argc, char *argv[]) {
 	gtk_widget_show(data->main_window);
 
 	/* Start main loop */
+  std::cout<< "starting main loop"<<std::endl;
 	gtk_main();
 
 	return (0);
