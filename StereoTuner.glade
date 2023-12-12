@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
+<!-- Generated with glade 3.40.0 -->
 <interface>
-  <requires lib="gtk+" version="3.10" />
+  <requires lib="gtk+" version="3.10"/>
   <object class="GtkAdjustment" id="adj_block_size">
     <property name="lower">1</property>
     <property name="upper">255</property>
     <property name="value">5</property>
     <property name="step-increment">2</property>
     <property name="page-increment">10</property>
-    <signal name="value-changed" handler="on_adj_block_size_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_block_size_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_disp_max_diff">
     <property name="lower">-1</property>
@@ -16,33 +16,33 @@
     <property name="value">-1</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
-    <signal name="value-changed" handler="on_adj_disp_max_diff_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_disp_max_diff_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_lambda">
     <property name="upper">100000</property>
     <property name="value">10000</property>
     <property name="step-increment">100</property>
     <property name="page-increment">100</property>
-    <signal name="value-changed" handler="on_adj_lambda_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_lambda_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_max_depth">
     <property name="upper">1000</property>
     <property name="value">1000</property>
     <property name="step-increment">1</property>
     <property name="page-increment">1</property>
-    <signal name="value-changed" handler="on_adj_max_depth_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_max_depth_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_min_depth">
     <property name="upper">1000</property>
     <property name="step-increment">1</property>
     <property name="page-increment">1</property>
-    <signal name="value-changed" handler="on_adj_min_depth_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_min_depth_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_min_disparity">
     <property name="upper">255</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
-    <signal name="value-changed" handler="on_adj_min_disparity_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_min_disparity_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_num_disparities">
     <property name="lower">16</property>
@@ -50,19 +50,19 @@
     <property name="value">64</property>
     <property name="step-increment">16</property>
     <property name="page-increment">10</property>
-    <signal name="value-changed" handler="on_adj_num_disparities_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_num_disparities_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_p1">
     <property name="upper">2048</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
-    <signal name="value-changed" handler="on_adj_p1_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_p1_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_p2">
     <property name="upper">2048</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
-    <signal name="value-changed" handler="on_adj_p2_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_p2_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_pre_filter_cap">
     <property name="lower">1</property>
@@ -70,7 +70,7 @@
     <property name="value">1</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
-    <signal name="value-changed" handler="on_adj_pre_filter_cap_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_pre_filter_cap_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_pre_filter_size">
     <property name="lower">5</property>
@@ -78,7 +78,7 @@
     <property name="value">5</property>
     <property name="step-increment">2</property>
     <property name="page-increment">10</property>
-    <signal name="value-changed" handler="on_adj_pre_filter_size_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_pre_filter_size_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_scale">
     <property name="lower">1</property>
@@ -86,7 +86,7 @@
     <property name="value">2</property>
     <property name="step-increment">0.10</property>
     <property name="page-increment">0.10</property>
-    <signal name="value-changed" handler="on_adj_scale_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_scale_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_sigma">
     <property name="lower">0.5</property>
@@ -94,31 +94,31 @@
     <property name="value">1.5</property>
     <property name="step-increment">0.10</property>
     <property name="page-increment">0.10</property>
-    <signal name="value-changed" handler="on_adj_sigma_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_sigma_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_speckle_range">
     <property name="upper">255</property>
     <property name="step-increment">1</property>
     <property name="page-increment">1</property>
-    <signal name="value-changed" handler="on_adj_speckle_range_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_speckle_range_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_speckle_window_size">
     <property name="upper">2048</property>
     <property name="step-increment">1</property>
     <property name="page-increment">1</property>
-    <signal name="value-changed" handler="on_adj_speckle_window_size_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_speckle_window_size_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_texture_threshold">
     <property name="upper">255</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
-    <signal name="value-changed" handler="on_adj_texture_threshold_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_texture_threshold_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_uniqueness_ratio">
     <property name="upper">255</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
-    <signal name="value-changed" handler="on_adj_uniqueness_ratio_value_changed" swapped="no" />
+    <signal name="value-changed" handler="on_adj_uniqueness_ratio_value_changed" swapped="no"/>
   </object>
   <object class="GtkWindow" id="window1">
     <property name="width-request">700</property>
@@ -127,7 +127,7 @@
     <property name="title" translatable="yes">Stereo Tuner</property>
     <property name="default-width">700</property>
     <property name="default-height">550</property>
-    <signal name="destroy" handler="gtk_main_quit" swapped="no" />
+    <signal name="destroy" handler="gtk_main_quit" swapped="no"/>
     <child>
       <object class="GtkBox" id="box2">
         <property name="visible">True</property>
@@ -143,10 +143,16 @@
               <object class="GtkGrid" id="grid3">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="margin-left">20</property>
+                <property name="margin-right">20</property>
+                <property name="margin-top">20</property>
+                <property name="margin-bottom">20</property>
                 <child>
                   <object class="GtkBox" id="box3">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <child>
                       <object class="GtkRadioButton" id="algo_sbm">
                         <property name="label" translatable="yes">StereoBM</property>
@@ -156,7 +162,7 @@
                         <property name="xalign">0</property>
                         <property name="active">True</property>
                         <property name="draw-indicator">True</property>
-                        <signal name="clicked" handler="on_algo_sbm_clicked" swapped="no" />
+                        <signal name="clicked" handler="on_algo_sbm_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -174,7 +180,7 @@
                         <property name="active">True</property>
                         <property name="draw-indicator">True</property>
                         <property name="group">algo_sbm</property>
-                        <signal name="clicked" handler="on_algo_ssgbm_clicked" swapped="no" />
+                        <signal name="clicked" handler="on_algo_ssgbm_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -194,6 +200,9 @@
                     <property name="can-focus">False</property>
                     <property name="tooltip-text" translatable="yes">Filters out areas that don't
                       have enough texture for reliable matching.</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">Texture threshold</property>
                   </object>
                   <packing>
@@ -209,6 +218,9 @@
                       the best (minimum) computed cost function value should "win" the second best
                       value to consider the found match correct. Normally, a value within the 5-15
                       range is good enough.</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">Uniqueness ratio</property>
                   </object>
                   <packing>
@@ -221,6 +233,9 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="tooltip-text" translatable="yes">Type of pre filter to be used.</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">Pre filter type</property>
                   </object>
                   <packing>
@@ -234,6 +249,9 @@
                     <property name="can-focus">False</property>
                     <property name="tooltip-text" translatable="yes">Pre-filter averaging window
                       size. Must be odd.</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">Pre filter size</property>
                   </object>
                   <packing>
@@ -249,6 +267,9 @@
                       prefiltered image pixels. The algorithm first computes x-derivative at each
                       pixel and clips its value by [-preFilterCap, preFilterCap] interval. The
                       result values are passed to the Birchfield-Tomasi pixel cost function.</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">Pre filter cap</property>
                   </object>
                   <packing>
@@ -268,6 +289,9 @@
                       stereo_match.cpp sample where some reasonably good P1 and P2 values are shown
                       (like 8*number_of_image_channels*SADWindowSize*SADWindowSize and
                       32*number_of_image_channels*SADWindowSize*SADWindowSize , respectively).</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">P2</property>
                   </object>
                   <packing>
@@ -281,6 +305,9 @@
                     <property name="can-focus">False</property>
                     <property name="tooltip-text" translatable="yes">The first parameter controlling
                       the disparity smoothness. See below.</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">P1</property>
                   </object>
                   <packing>
@@ -295,6 +322,9 @@
                     <property name="tooltip-text" translatable="yes">Maximum size of smooth
                       disparity regions to consider their noise speckles and invalidate. Set it to 0
                       to disable speckle filtering. Otherwise, set it somewhere in the 50-200 range.</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">Speckle window size</property>
                   </object>
                   <packing>
@@ -310,6 +340,9 @@
                       within each connected component. If you do speckle filtering, set the
                       parameter to a positive value, it will be implicitly multiplied by 16.
                       Normally, 1 or 2 is good enough.</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">Speckle range</property>
                   </object>
                   <packing>
@@ -324,6 +357,9 @@
                     <property name="tooltip-text" translatable="yes">Maximum allowed difference (in
                       integer pixel units) in the left-right disparity check. Set it to a
                       non-positive value to disable the check.</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">Disp 12 max diff</property>
                   </object>
                   <packing>
@@ -338,6 +374,9 @@
                     <property name="tooltip-text" translatable="yes">Maximum disparity minus minimum
                       disparity. The value is always greater than zero. In the current
                       implementation, this parameter must be divisible by 16.</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">Num disparities</property>
                   </object>
                   <packing>
@@ -365,6 +404,9 @@
                     <property name="can-focus">False</property>
                     <property name="tooltip-text" translatable="yes">Matched block size. It must be
                       an odd number &gt;=1 . Normally, it should be somewhere in the 3..11 range.</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">Block size</property>
                   </object>
                   <packing>
@@ -376,6 +418,9 @@
                   <object class="GtkLabel" id="label1">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">Algorithm</property>
                   </object>
                   <packing>
@@ -387,6 +432,8 @@
                   <object class="GtkScale" id="sc_texture_threshold">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_texture_threshold</property>
                     <property name="round-digits">1</property>
                     <property name="digits">0</property>
@@ -400,6 +447,8 @@
                   <object class="GtkScale" id="sc_uniqueness_ratio">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_uniqueness_ratio</property>
                     <property name="round-digits">1</property>
                     <property name="digits">0</property>
@@ -414,6 +463,9 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="tooltip-text" translatable="yes">Downscaling factor</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">scale</property>
                   </object>
                   <packing>
@@ -425,6 +477,8 @@
                   <object class="GtkBox" id="box1">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <child>
                       <object class="GtkRadioButton" id="rb_pre_filter_normalized">
                         <property name="label" translatable="yes">Norm. response</property>
@@ -436,8 +490,7 @@
                         <property name="xalign">0</property>
                         <property name="active">True</property>
                         <property name="draw-indicator">True</property>
-                        <signal name="clicked" handler="on_rb_pre_filter_normalized_clicked"
-                          swapped="no" />
+                        <signal name="clicked" handler="on_rb_pre_filter_normalized_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -456,8 +509,7 @@
                         <property name="active">True</property>
                         <property name="draw-indicator">True</property>
                         <property name="group">rb_pre_filter_normalized</property>
-                        <signal name="clicked" handler="on_rb_pre_filter_xsobel_clicked"
-                          swapped="no" />
+                        <signal name="clicked" handler="on_rb_pre_filter_xsobel_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -475,6 +527,8 @@
                   <object class="GtkScale" id="sc_pre_filter_size">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_pre_filter_size</property>
                     <property name="round-digits">1</property>
                     <property name="digits">0</property>
@@ -488,6 +542,8 @@
                   <object class="GtkScale" id="sc_pre_filter_cap">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_pre_filter_cap</property>
                     <property name="round-digits">1</property>
                     <property name="digits">0</property>
@@ -501,6 +557,8 @@
                   <object class="GtkScale" id="sc_p2">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_p2</property>
                     <property name="round-digits">1</property>
                     <property name="digits">0</property>
@@ -514,6 +572,8 @@
                   <object class="GtkScale" id="sc_p1">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_p1</property>
                     <property name="round-digits">1</property>
                     <property name="digits">0</property>
@@ -527,6 +587,8 @@
                   <object class="GtkScale" id="sc_speckle_window_size">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_speckle_window_size</property>
                     <property name="round-digits">1</property>
                     <property name="digits">0</property>
@@ -540,6 +602,8 @@
                   <object class="GtkScale" id="sc_speckle_range">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_speckle_range</property>
                     <property name="round-digits">1</property>
                     <property name="digits">0</property>
@@ -553,6 +617,8 @@
                   <object class="GtkScale" id="sc_disp_max_diff">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_disp_max_diff</property>
                     <property name="round-digits">1</property>
                     <property name="digits">0</property>
@@ -566,6 +632,8 @@
                   <object class="GtkScale" id="sc_num_disparities">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_num_disparities</property>
                     <property name="round-digits">1</property>
                     <property name="digits">0</property>
@@ -579,6 +647,8 @@
                   <object class="GtkScale" id="sc_min_disparity">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_min_disparity</property>
                     <property name="round-digits">1</property>
                     <property name="digits">0</property>
@@ -592,6 +662,8 @@
                   <object class="GtkScale" id="sc_block_size">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_block_size</property>
                     <property name="round-digits">1</property>
                     <property name="digits">0</property>
@@ -605,6 +677,8 @@
                   <object class="GtkScale" id="sc_scale">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_scale</property>
                     <property name="lower-stepper-sensitivity">on</property>
                     <property name="upper-stepper-sensitivity">on</property>
@@ -619,6 +693,8 @@
                   <object class="GtkBox" id="box4">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="homogeneous">True</property>
                     <child>
                       <object class="GtkButton" id="btn_save">
@@ -626,11 +702,11 @@
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="receives-default">True</property>
-                        <signal name="clicked" handler="on_btn_save_clicked" swapped="no" />
+                        <signal name="clicked" handler="on_btn_save_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
-                        <property name="fill">False</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -640,11 +716,11 @@
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="receives-default">True</property>
-                        <signal name="clicked" handler="on_btn_load_clicked" swapped="no" />
+                        <signal name="clicked" handler="on_btn_load_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
-                        <property name="fill">False</property>
+                        <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -654,11 +730,11 @@
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="receives-default">True</property>
-                        <signal name="clicked" handler="on_btn_defaults_clicked" swapped="no" />
+                        <signal name="clicked" handler="on_btn_defaults_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
-                        <property name="fill">False</property>
+                        <property name="fill">True</property>
                         <property name="position">2</property>
                       </packing>
                     </child>
@@ -679,9 +755,12 @@
                       dynamic programming algorithm. It will consume O(W*H*numDisparities) bytes,
                       which is large for 640x480 stereo and huge for HD-size pictures. By default,
                       it is set to false .</property>
+                    <property name="margin-left">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="xalign">0</property>
                     <property name="draw-indicator">True</property>
-                    <signal name="clicked" handler="on_chk_full_dp_clicked" swapped="no" />
+                    <signal name="clicked" handler="on_chk_full_dp_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -694,6 +773,9 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="tooltip-text" translatable="yes">Downscaling factor</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">Sigma color</property>
                   </object>
                   <packing>
@@ -706,6 +788,9 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="tooltip-text" translatable="yes">Downscaling factor</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">Lambda</property>
                   </object>
                   <packing>
@@ -717,6 +802,8 @@
                   <object class="GtkScale" id="sc_sigma">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_sigma</property>
                     <property name="lower-stepper-sensitivity">on</property>
                     <property name="upper-stepper-sensitivity">on</property>
@@ -731,6 +818,8 @@
                   <object class="GtkScale" id="sc_lambda">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_lambda</property>
                     <property name="lower-stepper-sensitivity">on</property>
                     <property name="upper-stepper-sensitivity">on</property>
@@ -746,6 +835,9 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="tooltip-text" translatable="yes">Downscaling factor</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">Min depth (mm)</property>
                   </object>
                   <packing>
@@ -757,6 +849,8 @@
                   <object class="GtkScale" id="sc_min_depth">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_min_depth</property>
                     <property name="lower-stepper-sensitivity">on</property>
                     <property name="upper-stepper-sensitivity">on</property>
@@ -772,6 +866,9 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="tooltip-text" translatable="yes">Downscaling factor</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="label" translatable="yes">max depth (mm)</property>
                   </object>
                   <packing>
@@ -783,6 +880,8 @@
                   <object class="GtkScale" id="sc_max_depth">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
                     <property name="adjustment">adj_max_depth</property>
                     <property name="lower-stepper-sensitivity">on</property>
                     <property name="upper-stepper-sensitivity">on</property>
@@ -809,12 +908,41 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkImage" id="image_left">
-                        <property name="width-request">320</property>
-                        <property name="height-request">240</property>
+                      <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="stock">gtk-missing-image</property>
+                        <property name="margin-left">20</property>
+                        <property name="margin-right">20</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkImage" id="image_left">
+                            <property name="width-request">320</property>
+                            <property name="height-request">240</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="stock">gtk-missing-image</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label20">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="margin-top">20</property>
+                            <property name="label" translatable="yes">Left image</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -823,12 +951,41 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkImage" id="image_right">
-                        <property name="width-request">320</property>
-                        <property name="height-request">240</property>
+                      <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="stock">gtk-missing-image</property>
+                        <property name="margin-left">20</property>
+                        <property name="margin-right">20</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkImage" id="image_right">
+                            <property name="width-request">320</property>
+                            <property name="height-request">240</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="stock">gtk-missing-image</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label21">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="margin-top">20</property>
+                            <property name="label" translatable="yes">Right image</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -848,12 +1005,41 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkImage" id="image_disparity">
-                        <property name="width-request">320</property>
-                        <property name="height-request">240</property>
+                      <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="stock">gtk-missing-image</property>
+                        <property name="margin-left">20</property>
+                        <property name="margin-right">20</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkImage" id="image_disparity">
+                            <property name="width-request">320</property>
+                            <property name="height-request">240</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="stock">gtk-missing-image</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label22">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="margin-top">20</property>
+                            <property name="label" translatable="yes">Disparity unfiltered</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -862,12 +1048,41 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkImage" id="image_disparity_filtered">
-                        <property name="width-request">320</property>
-                        <property name="height-request">240</property>
+                      <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="stock">gtk-missing-image</property>
+                        <property name="margin-left">20</property>
+                        <property name="margin-right">20</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkImage" id="image_disparity_filtered">
+                            <property name="width-request">320</property>
+                            <property name="height-request">240</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="stock">gtk-missing-image</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label23">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="margin-top">20</property>
+                            <property name="label" translatable="yes">Disparity filtered</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -887,12 +1102,41 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkImage" id="image_depth">
-                        <property name="width-request">320</property>
-                        <property name="height-request">240</property>
+                      <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="stock">gtk-missing-image</property>
+                        <property name="margin-left">20</property>
+                        <property name="margin-right">20</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkImage" id="image_depth">
+                            <property name="width-request">320</property>
+                            <property name="height-request">240</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="stock">gtk-missing-image</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label24">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="margin-top">20</property>
+                            <property name="label" translatable="yes">Depth unfiltered</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -901,21 +1145,48 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkImage" id="image_depth_filtered">
-                        <property name="width-request">320</property>
-                        <property name="height-request">240</property>
+                      <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="stock">gtk-missing-image</property>
+                        <property name="margin-left">20</property>
+                        <property name="margin-right">20</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkImage" id="image_depth_filtered">
+                            <property name="width-request">320</property>
+                            <property name="height-request">240</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="stock">gtk-missing-image</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label25">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="margin-top">20</property>
+                            <property name="label" translatable="yes">Depth filtered
+</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
-                    </child>
-                    <child>
-                      <placeholder />
                     </child>
                   </object>
                   <packing>
