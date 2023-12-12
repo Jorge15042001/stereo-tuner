@@ -1,3 +1,6 @@
+#include "opencv2/core/hal/interface.h"
+#include "opencv2/core/mat.hpp"
+#include "opencv2/core/types.hpp"
 #include <cstdio>
 #include <cstring>
 #include <ctime>
@@ -9,9 +12,68 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/ximgproc/disparity_filter.hpp>
 
 using namespace std;
 using namespace cv;
+const int baseline = 58;
+const double focal_length = 536.6291351996869;
+
+template <typename T>
+cv::Mat clipMatValues(const cv::Mat &inputMat, T minValue, T maxValue) {
+  cv::Mat response;
+  inputMat.copyTo(response);
+  cv::MatIterator_<T> it;
+  cv::MatIterator_<T> end;
+  for (it = response.begin<T>(), end = response.end<T>(); it != end; ++it) {
+    if (*it < minValue) {
+      *it = minValue;
+    } else if (*it > maxValue) {
+      *it = maxValue;
+    }
+  }
+  return response;
+}
+
+cv::Mat ImgToGradient(const cv::Mat &img, const double min, const double max) {
+
+  cv::Mat img_float;
+  img.convertTo(img_float, CV_32F);
+  const cv::Mat imgScaled = (img_float - min) / (max - min);
+  cv::Mat grayGradient = clipMatValues<float>(imgScaled, 0, 1);
+  grayGradient *= 255;
+  (grayGradient).convertTo(grayGradient, CV_8UC1);
+  // cv::cvtColor(grayGradient, grayGradient, cv::COLOR_GRAY2BGR);
+  return grayGradient;
+}
+cv::Mat ImgToColorGradient(const cv::Mat &img, const double min,
+                           const double max) {
+  const cv::Mat imgScaled = (img - min) / (max - min);
+  cv::Mat grayGradient = clipMatValues<float>(imgScaled, 0, 1);
+  cv::Mat inverseGradient = -grayGradient + 1;
+
+  grayGradient *= 255;
+  inverseGradient *= 255;
+
+  std::array<cv::Mat, 3> chanels;
+  (grayGradient).convertTo(chanels[0], CV_8UC1);
+  chanels[1] = cv::Mat::zeros(grayGradient.size(), CV_8UC1);
+  (inverseGradient).convertTo(chanels[2], CV_8UC1);
+
+  cv::Mat finalImage;
+  cv::merge(chanels.data(), 3, finalImage);
+  return finalImage;
+}
+
+cv::Mat computeDepthMap(const cv::Mat &dispMap, const double fLength,
+                        const double baseline, const double scale) {
+  cv::Mat dispMapFloat;
+  dispMap.convertTo(dispMapFloat, CV_32F);
+  dispMapFloat /= 16;
+  dispMapFloat *= scale;
+  cv::Mat depth = (fLength * baseline) / dispMapFloat;
+  return depth;
+}
 
 /* Matcher type */
 typedef enum { BM, SGBM } MatcherType;
@@ -22,7 +84,11 @@ struct ChData {
   GtkWidget *main_window; /* Main application window */
   GtkImage *image_left;
   GtkImage *image_right;
+  GtkImage *image_disp;
+  GtkImage *image_disp_filterd;
   GtkImage *image_depth;
+  GtkImage *image_depth_filtered;
+
   GtkWidget *rb_bm, *rb_sgbm;
   GtkWidget *sc_block_size, *sc_min_disparity, *sc_num_disparities,
       *sc_disp_max_diff, *sc_speckle_range, *sc_speckle_window_size, *sc_p1,
@@ -39,10 +105,12 @@ struct ChData {
   gint status_bar_context;
 
   /* OpenCV */
-  Ptr<StereoMatcher> stereo_matcher;
+  Ptr<StereoMatcher> stereo_matcher_left;
   Ptr<StereoMatcher> stereo_matcher_right;
-  Mat cv_image_left, cv_image_right, cv_image_disparity,
-      cv_image_disparity_normalized, cv_color_image;
+  Ptr<cv::ximgproc::DisparityWLSFilter> wls_filter;
+  Mat cv_image_left, cv_image_right, cv_image_disparity_left,
+      cv_image_disparity_right, cv_image_disparity_normalized, cv_color_image,
+      cv_image_disp_filtered, cv_image_depth, cv_image_depth_filtered;
   MatcherType matcher_type;
   int block_size;
   int disp_12_max_diff;
@@ -59,6 +127,10 @@ struct ChData {
   int p2;
   int mode;
   double scale;
+  double sigmaC;
+  int lambda;
+  int min_depth;
+  int max_depth;
 
   Rect *roi1, *roi2;
 
@@ -99,7 +171,9 @@ struct ChData {
         texture_threshold(DEFAULT_TEXTURE_THRESHOLD),
         uniqueness_ratio(DEFAULT_UNIQUENESS_RATIO), p1(DEFAULT_P1),
         p2(DEFAULT_P2), mode(DEFAULT_MODE), roi1(NULL), scale(DEFAULT_SCALE),
-        roi2(NULL), live_update(true) {}
+        sigmaC(DEFAULT_SIGMA), lambda(DEFAULT_LAMBDA),
+        min_depth(DEFAULT_MIN_DEPTH), max_depth(DEFAULT_MAX_DEPTH), roi2(NULL),
+        live_update(true) {}
 };
 
 void update_matcher(ChData *data) {
@@ -112,11 +186,11 @@ void update_matcher(ChData *data) {
 
   switch (data->matcher_type) {
   case BM:
-    stereo_bm = data->stereo_matcher.dynamicCast<StereoBM>();
+    stereo_bm = data->stereo_matcher_left.dynamicCast<StereoBM>();
 
     // If we have the wrong type of matcher, let's create a new one:
     if (!stereo_bm) {
-      data->stereo_matcher = stereo_bm = StereoBM::create(16, 1);
+      data->stereo_matcher_left = stereo_bm = StereoBM::create(16, 1);
 
       gtk_widget_set_sensitive(data->sc_block_size, true);
       gtk_widget_set_sensitive(data->sc_min_disparity, true);
@@ -147,6 +221,12 @@ void update_matcher(ChData *data) {
     stereo_bm->setPreFilterType(data->pre_filter_type);
     stereo_bm->setTextureThreshold(data->texture_threshold);
     stereo_bm->setUniquenessRatio(data->uniqueness_ratio);
+    data->stereo_matcher_right =
+        cv::ximgproc::createRightMatcher(data->stereo_matcher_left);
+    data->wls_filter =
+        cv::ximgproc::createDisparityWLSFilter(data->stereo_matcher_left);
+    data->wls_filter->setLambda(data->lambda);
+    data->wls_filter->setSigmaColor(data->sigmaC);
 
     if (data->roi1 != NULL && data->roi2 != NULL) {
       stereo_bm->setROI1(*data->roi1);
@@ -155,11 +235,11 @@ void update_matcher(ChData *data) {
     break;
 
   case SGBM:
-    stereo_sgbm = data->stereo_matcher.dynamicCast<StereoSGBM>();
+    stereo_sgbm = data->stereo_matcher_left.dynamicCast<StereoSGBM>();
 
     // If we have the wrong type of matcher, let's create a new one:
     if (!stereo_sgbm) {
-      data->stereo_matcher = stereo_sgbm = StereoSGBM::create(
+      data->stereo_matcher_left = stereo_sgbm = StereoSGBM::create(
           ChData::DEFAULT_MIN_DISPARITY, ChData::DEFAULT_NUM_DISPARITIES,
           ChData::DEFAULT_BLOCK_SIZE, ChData::DEFAULT_P1, ChData::DEFAULT_P2,
           ChData::DEFAULT_DISP_12_MAX_DIFF, ChData::DEFAULT_PRE_FILTER_CAP,
@@ -196,6 +276,13 @@ void update_matcher(ChData *data) {
     stereo_sgbm->setSpeckleWindowSize(data->speckle_window_size);
     stereo_sgbm->setUniquenessRatio(data->uniqueness_ratio);
 
+    data->stereo_matcher_right =
+        cv::ximgproc::createRightMatcher(data->stereo_matcher_left);
+    data->wls_filter =
+        cv::ximgproc::createDisparityWLSFilter(data->stereo_matcher_left);
+    data->wls_filter->setLambda(data->lambda);
+    data->wls_filter->setSigmaColor(data->sigmaC);
+
     break;
   }
 
@@ -209,8 +296,38 @@ void update_matcher(ChData *data) {
              1 / data->scale, 1 / data->scale);
   cv::resize(data->cv_image_right, right_image_scaled, cv::Size{},
              1 / data->scale, 1 / data->scale);
-  data->stereo_matcher->compute(left_image_scaled, right_image_scaled,
-                                data->cv_image_disparity);
+  data->stereo_matcher_left->compute(left_image_scaled, right_image_scaled,
+                                     data->cv_image_disparity_left);
+  data->stereo_matcher_right->compute(right_image_scaled, left_image_scaled,
+                                      data->cv_image_disparity_right);
+
+  data->cv_image_disparity_left.convertTo(data->cv_image_disparity_left,
+                                          CV_16S);
+  data->cv_image_disparity_right.convertTo(data->cv_image_disparity_right,
+                                           CV_16S);
+
+  data->wls_filter->filter(data->cv_image_disparity_left, left_image_scaled,
+                           data->cv_image_disp_filtered,
+                           data->cv_image_disparity_right, cv::Rect{},
+                           right_image_scaled);
+
+  cv::Mat depthMapFiltered = computeDepthMap(
+      data->cv_image_disp_filtered, focal_length, baseline, data->scale);
+  cv::Mat depthMap = computeDepthMap(data->cv_image_disparity_left,
+                                     focal_length, baseline, data->scale);
+  // color gradient for disp map
+  const double max_disp = focal_length * baseline / data->min_depth * 16;
+  const double min_disp = focal_length * baseline / data->max_depth * 16;
+  data->cv_image_disparity_left =
+      ImgToGradient(data->cv_image_disparity_left, min_disp, max_disp);
+  data->cv_image_disp_filtered =
+      ImgToGradient(data->cv_image_disp_filtered, min_disp, max_disp);
+  // color gradient for depth map
+  data->cv_image_depth_filtered =
+      ImgToGradient(depthMapFiltered, data->min_depth, data->max_depth);
+  data->cv_image_depth =
+      ImgToGradient(depthMap, data->min_depth, data->max_depth);
+
   std::cout << "computed disparity map\n";
   t = clock() - t;
 
@@ -222,16 +339,54 @@ void update_matcher(ChData *data) {
                      status_message);
   g_free(status_message);
 
-  normalize(data->cv_image_disparity, data->cv_image_disparity_normalized, 0,
-            255, cv::NORM_MINMAX, CV_8UC1);
-  cvtColor(data->cv_image_disparity_normalized, data->cv_color_image,
-           cv::COLOR_GRAY2BGR);
-  cv::resize(data->cv_color_image, data->cv_color_image, cv::Size{533, 300});
-  GdkPixbuf *pixbuf = gdk_pixbuf_new_from_data(
-      (guchar *)data->cv_color_image.data, GDK_COLORSPACE_RGB, false, 8,
-      data->cv_color_image.cols, data->cv_color_image.rows,
-      data->cv_color_image.step, NULL, NULL);
-  gtk_image_set_from_pixbuf(data->image_depth, pixbuf);
+  // normalize(data->cv_image_disparity_left,
+  // data->cv_image_disparity_normalized,
+  //           0, 255, cv::NORM_MINMAX, CV_8UC1);
+  // cvtColor(data->cv_image_disparity_normalized, data->cv_color_image,
+  //          cv::COLOR_GRAY2BGR);
+  // cv::resize(data->cv_color_image, data->cv_color_image, cv::Size{533, 300});
+
+  // resize all images that will be shown (disparites and depth maps)
+  std::cout << "resizing images\n";
+  cv::resize(data->cv_image_disparity_left, data->cv_image_disparity_left,
+             cv::Size{533, 300});
+  cv::resize(data->cv_image_disp_filtered, data->cv_image_disp_filtered,
+             cv::Size{533, 300});
+  cv::resize(data->cv_image_depth, data->cv_image_depth, cv::Size{533, 300});
+  cv::resize(data->cv_image_depth_filtered, data->cv_image_depth_filtered,
+             cv::Size{533, 300});
+  // make all images BRG
+  std::cout << "converting color disp\n";
+  cv::cvtColor(data->cv_image_disparity_left, data->cv_image_disparity_left,
+               cv::COLOR_GRAY2BGR);
+  std::cout << "converting color disp filtered\n";
+  cv::cvtColor(data->cv_image_disp_filtered, data->cv_image_disp_filtered,
+               cv::COLOR_GRAY2BGR);
+  std::cout << "converting color depth \n";
+  cv::cvtColor(data->cv_image_depth, data->cv_image_depth, cv::COLOR_GRAY2BGR);
+  // cv::cvtColor(data->cv_image_depth, data->cv_image_depth,
+  // cv::COLOR_GRAY2BGR);
+  cv::cvtColor(data->cv_image_depth_filtered, data->cv_image_depth_filtered,
+               cv::COLOR_GRAY2BGR);
+  std::cout << "done converting color\n";
+
+  const auto img_to_pix_buff = [](const cv::Mat &img) -> GdkPixbuf * {
+    return gdk_pixbuf_new_from_data((guchar *)img.data, GDK_COLORSPACE_RGB,
+                                    false, 8, img.cols, img.rows, img.step,
+                                    NULL, NULL);
+  };
+  auto *pixbuff_disp = img_to_pix_buff(data->cv_image_disparity_left);
+  auto *pixbuff_disp_filtered = img_to_pix_buff(data->cv_image_disp_filtered);
+  auto *pixbuff_depth = img_to_pix_buff(data->cv_image_depth);
+  auto *pixbuff_depth_filtered = img_to_pix_buff(data->cv_image_depth_filtered);
+  // GdkPixbuf *pixbuf = gdk_pixbuf_new_from_data(
+  //     (guchar *)data->cv_color_image.data, GDK_COLORSPACE_RGB, false, 8,
+  //     data->cv_color_image.cols, data->cv_color_image.rows,
+  //     data->cv_color_image.step, NULL, NULL);
+  gtk_image_set_from_pixbuf(data->image_disp, pixbuff_disp);
+  gtk_image_set_from_pixbuf(data->image_disp_filterd, pixbuff_disp_filtered);
+  gtk_image_set_from_pixbuf(data->image_depth, pixbuff_depth);
+  gtk_image_set_from_pixbuf(data->image_depth_filtered, pixbuff_depth_filtered);
 }
 
 void update_interface(ChData *data) {
@@ -259,6 +414,11 @@ void update_interface(ChData *data) {
   gtk_adjustment_set_value(data->adj_texture_threshold,
                            data->texture_threshold);
   gtk_adjustment_set_value(data->adj_scale, data->scale);
+  gtk_adjustment_set_value(data->adj_sigma, data->sigmaC);
+  gtk_adjustment_set_value(data->adj_lambda, data->lambda);
+  gtk_adjustment_set_value(data->adj_min_depth, data->min_depth);
+  gtk_adjustment_set_value(data->adj_max_depth, data->max_depth);
+
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->chk_full_dp),
                                data->mode == StereoSGBM::MODE_HH);
 
@@ -499,6 +659,63 @@ G_MODULE_EXPORT void on_adj_scale_value_changed(GtkAdjustment *adjustment,
   value = (gdouble)gtk_adjustment_get_value(adjustment);
 
   data->scale = value;
+  update_matcher(data);
+}
+G_MODULE_EXPORT void on_adj_sigma_value_changed(GtkAdjustment *adjustment,
+                                                ChData *data) {
+  gdouble value;
+
+  if (data == NULL) {
+    fprintf(stderr, "WARNING: data is null\n");
+    return;
+  }
+
+  value = (gdouble)gtk_adjustment_get_value(adjustment);
+
+  data->sigmaC = value;
+  update_matcher(data);
+}
+G_MODULE_EXPORT void on_adj_lambda_value_changed(GtkAdjustment *adjustment,
+                                                 ChData *data) {
+  gint value;
+
+  if (data == NULL) {
+    fprintf(stderr, "WARNING: data is null\n");
+    return;
+  }
+
+  value = (gint)gtk_adjustment_get_value(adjustment);
+
+  data->lambda = value;
+  std::cout << "\t changed lambda " << data->lambda << std::endl;
+  update_matcher(data);
+}
+G_MODULE_EXPORT void on_adj_min_depth_value_changed(GtkAdjustment *adjustment,
+                                                    ChData *data) {
+  gint value;
+
+  if (data == NULL) {
+    fprintf(stderr, "WARNING: data is null\n");
+    return;
+  }
+
+  value = (gint)gtk_adjustment_get_value(adjustment);
+
+  data->min_depth = value;
+  update_matcher(data);
+}
+G_MODULE_EXPORT void on_adj_max_depth_value_changed(GtkAdjustment *adjustment,
+                                                    ChData *data) {
+  gint value;
+
+  if (data == NULL) {
+    fprintf(stderr, "WARNING: data is null\n");
+    return;
+  }
+
+  value = (gint)gtk_adjustment_get_value(adjustment);
+
+  data->max_depth = value;
   update_matcher(data);
 }
 
@@ -782,6 +999,7 @@ int main(int argc, char *argv[]) {
   }
 
   Mat left_image = imread(left_filename, 1);
+  left_image *= 6;
 
   if (left_image.empty()) {
     printf("Could not read left image %s.\n", left_filename);
@@ -789,6 +1007,7 @@ int main(int argc, char *argv[]) {
   }
 
   Mat right_image = imread(right_filename, 1);
+  right_image *= 6;
 
   if (right_image.empty()) {
     printf("Could not read right image %s.\n", right_filename);
@@ -875,18 +1094,26 @@ int main(int argc, char *argv[]) {
   /* Create new GtkBuilder object */
   builder = gtk_builder_new();
 
+  std::cout << "loading glade file\n";
   if (!gtk_builder_add_from_file(builder, "StereoTuner.glade", &error)) {
+    std::cout << "Failed to load glade file\n";
     g_warning("%s", error->message);
     g_free(error);
     return (1);
   }
+  std::cout << "loaded glade file\n";
 
   /* Get main window pointer from UI */
   data->main_window = GTK_WIDGET(gtk_builder_get_object(builder, "window1"));
   data->image_left = GTK_IMAGE(gtk_builder_get_object(builder, "image_left"));
   data->image_right = GTK_IMAGE(gtk_builder_get_object(builder, "image_right"));
-  data->image_depth =
+  data->image_disp =
       GTK_IMAGE(gtk_builder_get_object(builder, "image_disparity"));
+  data->image_disp_filterd =
+      GTK_IMAGE(gtk_builder_get_object(builder, "image_disparity_filtered"));
+  data->image_depth = GTK_IMAGE(gtk_builder_get_object(builder, "image_depth"));
+  data->image_depth_filtered =
+      GTK_IMAGE(gtk_builder_get_object(builder, "image_depth_filtered"));
 
   data->sc_block_size =
       GTK_WIDGET(gtk_builder_get_object(builder, "sc_block_size"));
@@ -911,6 +1138,12 @@ int main(int argc, char *argv[]) {
   data->sc_texture_threshold =
       GTK_WIDGET(gtk_builder_get_object(builder, "sc_texture_threshold"));
   data->sc_scale = GTK_WIDGET(gtk_builder_get_object(builder, "sc_scale"));
+  data->sc_sigma = GTK_WIDGET(gtk_builder_get_object(builder, "sc_sigma"));
+  data->sc_lambda = GTK_WIDGET(gtk_builder_get_object(builder, "sc_lambda"));
+  data->sc_min_depth =
+      GTK_WIDGET(gtk_builder_get_object(builder, "sc_min_depth"));
+  data->sc_max_depth =
+      GTK_WIDGET(gtk_builder_get_object(builder, "sc_max_depth"));
   data->rb_pre_filter_normalized =
       GTK_WIDGET(gtk_builder_get_object(builder, "rb_pre_filter_normalized"));
   data->rb_pre_filter_xsobel =
@@ -946,6 +1179,14 @@ int main(int argc, char *argv[]) {
       GTK_STATUSBAR(data->status_bar), "Statusbar context");
   data->adj_scale =
       GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adj_scale"));
+  data->adj_sigma =
+      GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adj_sigma"));
+  data->adj_lambda =
+      GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adj_lambda"));
+  data->adj_min_depth =
+      GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adj_min_depth"));
+  data->adj_max_depth =
+      GTK_ADJUSTMENT(gtk_builder_get_object(builder, "adj_max_depth"));
 
   // Put images in place:
   // gtk_image_set_from_file(data->image_left, left_filename);
