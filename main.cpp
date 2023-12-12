@@ -316,8 +316,10 @@ void update_matcher(ChData *data) {
   cv::Mat depthMap = computeDepthMap(data->cv_image_disparity_left,
                                      focal_length, baseline, data->scale);
   // color gradient for disp map
-  const double max_disp = focal_length * baseline / data->min_depth * 16;
-  const double min_disp = focal_length * baseline / data->max_depth * 16;
+  const double max_disp =
+      focal_length * baseline / data->min_depth * 16 / data->scale;
+  const double min_disp =
+      focal_length * baseline / data->max_depth * 16 / data->scale;
   data->cv_image_disparity_left =
       ImgToGradient(data->cv_image_disparity_left, min_disp, max_disp);
   data->cv_image_disp_filtered =
