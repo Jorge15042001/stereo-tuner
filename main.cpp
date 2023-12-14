@@ -17,7 +17,8 @@
 using namespace std;
 using namespace cv;
 const int baseline = 58;
-const double focal_length = 536.6291351996869;
+const double focal_length = 632.6291351996869;
+const cv::Size show_size = {444, 250};
 
 template <typename T>
 cv::Mat clipMatValues(const cv::Mat &inputMat, T minValue, T maxValue) {
@@ -275,6 +276,7 @@ void update_matcher(ChData *data) {
     stereo_sgbm->setSpeckleRange(data->speckle_range);
     stereo_sgbm->setSpeckleWindowSize(data->speckle_window_size);
     stereo_sgbm->setUniquenessRatio(data->uniqueness_ratio);
+    stereo_sgbm->setMode(cv::StereoSGBM::MODE_HH4);
 
     data->stereo_matcher_right =
         cv::ximgproc::createRightMatcher(data->stereo_matcher_left);
@@ -346,17 +348,17 @@ void update_matcher(ChData *data) {
   //           0, 255, cv::NORM_MINMAX, CV_8UC1);
   // cvtColor(data->cv_image_disparity_normalized, data->cv_color_image,
   //          cv::COLOR_GRAY2BGR);
-  // cv::resize(data->cv_color_image, data->cv_color_image, cv::Size{533, 300});
+  // cv::resize(data->cv_color_image, data->cv_color_image, show_size);
 
   // resize all images that will be shown (disparites and depth maps)
   std::cout << "resizing images\n";
   cv::resize(data->cv_image_disparity_left, data->cv_image_disparity_left,
-             cv::Size{533, 300});
+             show_size);
   cv::resize(data->cv_image_disp_filtered, data->cv_image_disp_filtered,
-             cv::Size{533, 300});
-  cv::resize(data->cv_image_depth, data->cv_image_depth, cv::Size{533, 300});
+             show_size);
+  cv::resize(data->cv_image_depth, data->cv_image_depth, show_size);
   cv::resize(data->cv_image_depth_filtered, data->cv_image_depth_filtered,
-             cv::Size{533, 300});
+             show_size);
   // make all images BRG
   std::cout << "converting color disp\n";
   cv::cvtColor(data->cv_image_disparity_left, data->cv_image_disparity_left,
@@ -1001,7 +1003,7 @@ int main(int argc, char *argv[]) {
   }
 
   Mat left_image = imread(left_filename, 1);
-  left_image *= 6;
+  // left_image *= 6;
 
   if (left_image.empty()) {
     printf("Could not read left image %s.\n", left_filename);
@@ -1009,7 +1011,7 @@ int main(int argc, char *argv[]) {
   }
 
   Mat right_image = imread(right_filename, 1);
-  right_image *= 6;
+  // right_image *= 6;
 
   if (right_image.empty()) {
     printf("Could not read right image %s.\n", right_filename);
@@ -1197,14 +1199,14 @@ int main(int argc, char *argv[]) {
   std::cout << "setting RGB image for UI\n";
   Mat leftRGB, rightRGB;
   cvtColor(left_image, leftRGB, cv::COLOR_BGR2RGB);
-  cv::resize(leftRGB, leftRGB, cv::Size{533, 300});
+  cv::resize(leftRGB, leftRGB, show_size);
   GdkPixbuf *pixbuf = gdk_pixbuf_new_from_data(
       (guchar *)leftRGB.data, GDK_COLORSPACE_RGB, false, 8, leftRGB.cols,
       leftRGB.rows, leftRGB.step, NULL, NULL);
   gtk_image_set_from_pixbuf(data->image_left, pixbuf);
 
   cvtColor(right_image, rightRGB, cv::COLOR_BGR2RGB);
-  cv::resize(rightRGB, rightRGB, cv::Size{533, 300});
+  cv::resize(rightRGB, rightRGB, show_size);
   pixbuf = gdk_pixbuf_new_from_data((guchar *)rightRGB.data, GDK_COLORSPACE_RGB,
                                     false, 8, rightRGB.cols, rightRGB.rows,
                                     rightRGB.step, NULL, NULL);
