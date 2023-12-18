@@ -152,7 +152,7 @@ struct ChData {
   static const int DEFAULT_UNIQUENESS_RATIO = 0;
   static const int DEFAULT_P1 = 0;
   static const int DEFAULT_P2 = 0;
-  static const int DEFAULT_MODE = StereoSGBM::MODE_SGBM;
+  static const int DEFAULT_MODE = StereoSGBM::MODE_HH4;
   static constexpr double DEFAULT_SCALE = 2.0;
   static constexpr double DEFAULT_SIGMA = 1.7;
   static constexpr int DEFAULT_LAMBDA = 10000;
