@@ -1,6 +1,7 @@
 #include "opencv2/core/hal/interface.h"
 #include "opencv2/core/mat.hpp"
 #include "opencv2/core/types.hpp"
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <ctime>
@@ -17,7 +18,7 @@
 using namespace std;
 using namespace cv;
 const int baseline = 58;
-const double focal_length = 632.6291351996869;
+const double focal_length = 594.2944545178186;
 const cv::Size show_size = {444, 250};
 
 template <typename T>
@@ -154,10 +155,10 @@ struct ChData {
   static const int DEFAULT_P2 = 0;
   static const int DEFAULT_MODE = StereoSGBM::MODE_SGBM;
   static constexpr double DEFAULT_SCALE = 2.0;
-  static constexpr double DEFAULT_SIGMA = 1.7;
+  static constexpr double DEFAULT_SIGMA = 0.5;
   static constexpr int DEFAULT_LAMBDA = 10000;
-  static constexpr int DEFAULT_MIN_DEPTH = 0;
-  static constexpr int DEFAULT_MAX_DEPTH = 10000;
+  static constexpr int DEFAULT_MIN_DEPTH = 240;
+  static constexpr int DEFAULT_MAX_DEPTH = 410;
 
   ChData()
       : matcher_type(BM), block_size(DEFAULT_BLOCK_SIZE),
@@ -277,6 +278,23 @@ void update_matcher(ChData *data) {
     stereo_sgbm->setSpeckleWindowSize(data->speckle_window_size);
     stereo_sgbm->setUniquenessRatio(data->uniqueness_ratio);
     stereo_sgbm->setMode(cv::StereoSGBM::MODE_HH4);
+    // stereo_sgbm = data->stereo_matcher_left.dynamicCast<StereoSGBM>();
+    if (data->min_depth < 0) {
+      data->min_depth = ChData::DEFAULT_MIN_DEPTH;
+    }
+    const double max_disp =
+        focal_length * baseline / data->min_depth * 16 / data->scale;
+    const double min_disp =
+        focal_length * baseline / data->max_depth * 16 / data->scale;
+    const int num_disp =
+        int(std::ceil((max_disp - min_disp) / 16.0 / 16.0)) * 16 + 16;
+
+    std::cout << "num_disp " << num_disp << " min disp " << min_disp / 16
+              << " max disp " << max_disp << std::endl;
+    std::cout << "min_depth" << data->min_depth << " max disp "
+              << data->max_depth << std::endl;
+    stereo_sgbm->setMinDisparity(int(min_disp / 16));
+    stereo_sgbm->setNumDisparities(num_disp);
 
     data->stereo_matcher_right =
         cv::ximgproc::createRightMatcher(data->stereo_matcher_left);
@@ -322,6 +340,7 @@ void update_matcher(ChData *data) {
       focal_length * baseline / data->min_depth * 16 / data->scale;
   const double min_disp =
       focal_length * baseline / data->max_depth * 16 / data->scale;
+
   data->cv_image_disparity_left =
       ImgToGradient(data->cv_image_disparity_left, min_disp, max_disp);
   data->cv_image_disp_filtered =
@@ -952,7 +971,7 @@ G_MODULE_EXPORT void on_btn_load_clicked(GtkButton *b, ChData *data) {
 }
 
 G_MODULE_EXPORT void on_btn_defaults_clicked(GtkButton *b, ChData *data) {
-  data->matcher_type = BM;
+  data->matcher_type = SGBM;
   data->block_size = ChData::DEFAULT_BLOCK_SIZE;
   data->disp_12_max_diff = ChData::DEFAULT_DISP_12_MAX_DIFF;
   data->min_disparity = ChData::DEFAULT_MIN_DISPARITY;
@@ -967,6 +986,11 @@ G_MODULE_EXPORT void on_btn_defaults_clicked(GtkButton *b, ChData *data) {
   data->p1 = ChData::DEFAULT_P1;
   data->p2 = ChData::DEFAULT_P2;
   data->mode = ChData::DEFAULT_MODE;
+  data->sigmaC = ChData::DEFAULT_SIGMA;
+  data->lambda = ChData::DEFAULT_LAMBDA;
+  data->min_depth = ChData::DEFAULT_MIN_DEPTH;
+  data->max_depth = ChData::DEFAULT_MAX_DEPTH;
+  data->scale = ChData::DEFAULT_SCALE;
   update_interface(data);
 }
 }
