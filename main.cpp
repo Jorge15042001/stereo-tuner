@@ -178,6 +178,7 @@ struct ChData {
         live_update(true) {}
 };
 
+void update_interface(ChData *data, bool recompute = true);
 void update_matcher(ChData *data) {
   if (!data->live_update) {
     return;
@@ -283,17 +284,16 @@ void update_matcher(ChData *data) {
       data->min_depth = ChData::DEFAULT_MIN_DEPTH;
     }
     const double max_disp =
-        focal_length * baseline / data->min_depth * 16 / data->scale;
+        focal_length * baseline / data->min_depth / data->scale;
     const double min_disp =
-        focal_length * baseline / data->max_depth * 16 / data->scale;
-    const int num_disp =
-        int(std::ceil((max_disp - min_disp) / 16.0 / 16.0)) * 16 + 16;
+        focal_length * baseline / data->max_depth / data->scale;
+    const int num_disp = int(std::ceil((max_disp - min_disp) / 16.0)) * 16;
 
-    std::cout << "num_disp " << num_disp << " min disp " << min_disp / 16
+    std::cout << "num_disp " << num_disp << " min disp " << min_disp
               << " max disp " << max_disp << std::endl;
     std::cout << "min_depth" << data->min_depth << " max disp "
               << data->max_depth << std::endl;
-    stereo_sgbm->setMinDisparity(int(min_disp / 16));
+    stereo_sgbm->setMinDisparity(int(min_disp));
     stereo_sgbm->setNumDisparities(num_disp);
 
     data->stereo_matcher_right =
@@ -302,6 +302,7 @@ void update_matcher(ChData *data) {
         cv::ximgproc::createDisparityWLSFilter(data->stereo_matcher_left);
     data->wls_filter->setLambda(data->lambda);
     data->wls_filter->setSigmaColor(data->sigmaC);
+    update_interface(data, false);
 
     break;
   }
@@ -313,9 +314,9 @@ void update_matcher(ChData *data) {
   cv::Mat right_image_scaled;
 
   cv::resize(data->cv_image_left, left_image_scaled, cv::Size{},
-             1 / data->scale, 1 / data->scale);
+             1 / data->scale, 1 / data->scale, cv::INTER_LINEAR_EXACT);
   cv::resize(data->cv_image_right, right_image_scaled, cv::Size{},
-             1 / data->scale, 1 / data->scale);
+             1 / data->scale, 1 / data->scale, cv::INTER_LINEAR_EXACT);
   data->stereo_matcher_left->compute(left_image_scaled, right_image_scaled,
                                      data->cv_image_disparity_left);
   data->stereo_matcher_right->compute(right_image_scaled, left_image_scaled,
@@ -372,12 +373,13 @@ void update_matcher(ChData *data) {
   // resize all images that will be shown (disparites and depth maps)
   std::cout << "resizing images\n";
   cv::resize(data->cv_image_disparity_left, data->cv_image_disparity_left,
-             show_size);
+             show_size, 0, 0, cv::INTER_NEAREST_EXACT);
   cv::resize(data->cv_image_disp_filtered, data->cv_image_disp_filtered,
-             show_size);
-  cv::resize(data->cv_image_depth, data->cv_image_depth, show_size);
+             show_size, 0, 0, cv::INTER_NEAREST_EXACT);
+  cv::resize(data->cv_image_depth, data->cv_image_depth, show_size, 0, 0,
+             cv::INTER_NEAREST_EXACT);
   cv::resize(data->cv_image_depth_filtered, data->cv_image_depth_filtered,
-             show_size);
+             show_size, 0, 0, cv::INTER_NEAREST_EXACT);
   // make all images BRG
   std::cout << "converting color disp\n";
   cv::cvtColor(data->cv_image_disparity_left, data->cv_image_disparity_left,
@@ -412,7 +414,7 @@ void update_matcher(ChData *data) {
   gtk_image_set_from_pixbuf(data->image_depth_filtered, pixbuff_depth_filtered);
 }
 
-void update_interface(ChData *data) {
+void update_interface(ChData *data, bool recompute) {
   // Avoids rebuilding the matcher on every change:
   data->live_update = false;
 
@@ -454,7 +456,9 @@ void update_interface(ChData *data) {
   }
 
   data->live_update = true;
-  update_matcher(data);
+  if (recompute) {
+    update_matcher(data);
+  }
 }
 
 extern "C" {
