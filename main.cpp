@@ -1,6 +1,10 @@
+#include "opencv2/core.hpp"
 #include "opencv2/core/hal/interface.h"
 #include "opencv2/core/mat.hpp"
 #include "opencv2/core/types.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgproc.hpp"
+#include "opencv2/photo.hpp"
 #include <cmath>
 #include <cstdio>
 #include <cstring>
@@ -314,9 +318,9 @@ void update_matcher(ChData *data) {
   cv::Mat right_image_scaled;
 
   cv::resize(data->cv_image_left, left_image_scaled, cv::Size{},
-             1 / data->scale, 1 / data->scale, cv::INTER_LINEAR_EXACT);
+             1 / data->scale, 1 / data->scale, cv::INTER_AREA);
   cv::resize(data->cv_image_right, right_image_scaled, cv::Size{},
-             1 / data->scale, 1 / data->scale, cv::INTER_LINEAR_EXACT);
+             1 / data->scale, 1 / data->scale, cv::INTER_AREA);
   data->stereo_matcher_left->compute(left_image_scaled, right_image_scaled,
                                      data->cv_image_disparity_left);
   data->stereo_matcher_right->compute(right_image_scaled, left_image_scaled,
@@ -1031,7 +1035,7 @@ int main(int argc, char *argv[]) {
   }
 
   Mat left_image = imread(left_filename, 1);
-  // left_image *= 6;
+  // left_image *= 6.;
 
   if (left_image.empty()) {
     printf("Could not read left image %s.\n", left_filename);
