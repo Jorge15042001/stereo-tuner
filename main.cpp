@@ -18,6 +18,7 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/ximgproc/disparity_filter.hpp>
+#include <ostream>
 
 using namespace std;
 using namespace cv;
@@ -272,7 +273,10 @@ void update_matcher(ChData *data) {
     }
 
     stereo_sgbm->setBlockSize(data->block_size);
+    std::cout << "\t\t\tchaning disp12 " << data->disp_12_max_diff << std::endl;
     stereo_sgbm->setDisp12MaxDiff(data->disp_12_max_diff);
+    std::cout << "\t\t\tread disp12 " << stereo_sgbm->getDisp12MaxDiff()
+              << std::endl;
     stereo_sgbm->setMinDisparity(data->min_disparity);
     stereo_sgbm->setMode(data->mode);
     stereo_sgbm->setNumDisparities(data->num_disparities);
@@ -346,6 +350,18 @@ void update_matcher(ChData *data) {
   const double min_disp =
       focal_length * baseline / data->max_depth * 16 / data->scale;
 
+  cv::Mat dispCheckMask;
+  cv::Mat leftDispMapFloat;
+  double min, max;
+  cv::minMaxLoc(data->cv_image_disparity_left, &min, &max);
+  data->cv_image_disparity_left.convertTo(leftDispMapFloat, CV_32F);
+  cv::threshold(leftDispMapFloat, dispCheckMask, min_disp, 255,
+                THRESH_BINARY_INV);
+  dispCheckMask.convertTo(dispCheckMask, CV_8UC1);
+  cv::imshow("mask", dispCheckMask);
+  std::cout << "\t\tmin " << min << "  " << int(min_disp) << " "
+            << data->stereo_matcher_left->getDisp12MaxDiff() << std::endl;
+  cv::waitKey(1);
   data->cv_image_disparity_left =
       ImgToGradient(data->cv_image_disparity_left, min_disp, max_disp);
   data->cv_image_disp_filtered =
@@ -545,6 +561,7 @@ on_adj_disp_max_diff_value_changed(GtkAdjustment *adjustment, ChData *data) {
   value = (gint)gtk_adjustment_get_value(adjustment);
 
   data->disp_12_max_diff = value;
+  std::cout << "chaning disp12 " << value << std::endl;
   update_matcher(data);
 }
 
