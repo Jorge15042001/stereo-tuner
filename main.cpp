@@ -156,9 +156,9 @@ struct ChData {
       StereoBM::PREFILTER_NORMALIZED_RESPONSE;
   static const int DEFAULT_TEXTURE_THRESHOLD = 0;
   static const int DEFAULT_UNIQUENESS_RATIO = 0;
-  static const int DEFAULT_P1 = 0;
-  static const int DEFAULT_P2 = 0;
-  static const int DEFAULT_MODE = StereoSGBM::MODE_SGBM;
+  static const int DEFAULT_P1 = 8;
+  static const int DEFAULT_P2 = 32;
+  static const int DEFAULT_MODE = StereoSGBM::MODE_HH4;
   static constexpr double DEFAULT_SCALE = 2.0;
   static constexpr double DEFAULT_SIGMA = 0.5;
   static constexpr int DEFAULT_LAMBDA = 10000;
@@ -201,21 +201,21 @@ void update_matcher(ChData *data) {
       data->stereo_matcher_left = stereo_bm = StereoBM::create(16, 1);
 
       gtk_widget_set_sensitive(data->sc_block_size, true);
-      gtk_widget_set_sensitive(data->sc_min_disparity, true);
-      gtk_widget_set_sensitive(data->sc_num_disparities, true);
-      gtk_widget_set_sensitive(data->sc_disp_max_diff, true);
-      gtk_widget_set_sensitive(data->sc_speckle_range, true);
-      gtk_widget_set_sensitive(data->sc_speckle_window_size, true);
+      // gtk_widget_set_sensitive(data->sc_min_disparity, true);
+      // gtk_widget_set_sensitive(data->sc_num_disparities, true);
+      // gtk_widget_set_sensitive(data->sc_disp_max_diff, true);
+      // gtk_widget_set_sensitive(data->sc_speckle_range, true);
+      // gtk_widget_set_sensitive(data->sc_speckle_window_size, true);
       gtk_widget_set_sensitive(data->sc_p1, false);
       gtk_widget_set_sensitive(data->sc_p2, false);
-      gtk_widget_set_sensitive(data->sc_pre_filter_cap, true);
-      gtk_widget_set_sensitive(data->sc_pre_filter_size, true);
-      gtk_widget_set_sensitive(data->sc_uniqueness_ratio, true);
-      gtk_widget_set_sensitive(data->sc_texture_threshold, true);
+      // gtk_widget_set_sensitive(data->sc_pre_filter_cap, true);
+      // gtk_widget_set_sensitive(data->sc_pre_filter_size, true);
+      // gtk_widget_set_sensitive(data->sc_uniqueness_ratio, true);
+      // gtk_widget_set_sensitive(data->sc_texture_threshold, true);
       gtk_widget_set_sensitive(data->sc_scale, true);
-      gtk_widget_set_sensitive(data->rb_pre_filter_normalized, true);
-      gtk_widget_set_sensitive(data->rb_pre_filter_xsobel, true);
-      gtk_widget_set_sensitive(data->chk_full_dp, false);
+      // gtk_widget_set_sensitive(data->rb_pre_filter_normalized, true);
+      // gtk_widget_set_sensitive(data->rb_pre_filter_xsobel, true);
+      // gtk_widget_set_sensitive(data->chk_full_dp, false);
     }
 
     stereo_bm->setBlockSize(data->block_size);
@@ -255,21 +255,21 @@ void update_matcher(ChData *data) {
           ChData::DEFAULT_SPECKLE_RANGE, ChData::DEFAULT_MODE);
 
       gtk_widget_set_sensitive(data->sc_block_size, true);
-      gtk_widget_set_sensitive(data->sc_min_disparity, true);
-      gtk_widget_set_sensitive(data->sc_num_disparities, true);
-      gtk_widget_set_sensitive(data->sc_disp_max_diff, true);
-      gtk_widget_set_sensitive(data->sc_speckle_range, true);
-      gtk_widget_set_sensitive(data->sc_speckle_window_size, true);
+      // gtk_widget_set_sensitive(data->sc_min_disparity, true);
+      // gtk_widget_set_sensitive(data->sc_num_disparities, true);
+      // gtk_widget_set_sensitive(data->sc_disp_max_diff, true);
+      // gtk_widget_set_sensitive(data->sc_speckle_range, true);
+      // gtk_widget_set_sensitive(data->sc_speckle_window_size, true);
       gtk_widget_set_sensitive(data->sc_p1, true);
       gtk_widget_set_sensitive(data->sc_p2, true);
-      gtk_widget_set_sensitive(data->sc_pre_filter_cap, true);
-      gtk_widget_set_sensitive(data->sc_pre_filter_size, false);
-      gtk_widget_set_sensitive(data->sc_uniqueness_ratio, true);
-      gtk_widget_set_sensitive(data->sc_texture_threshold, false);
+      // gtk_widget_set_sensitive(data->sc_pre_filter_cap, true);
+      // gtk_widget_set_sensitive(data->sc_pre_filter_size, false);
+      // gtk_widget_set_sensitive(data->sc_uniqueness_ratio, true);
+      // gtk_widget_set_sensitive(data->sc_texture_threshold, false);
       gtk_widget_set_sensitive(data->sc_scale, true);
-      gtk_widget_set_sensitive(data->rb_pre_filter_normalized, false);
-      gtk_widget_set_sensitive(data->rb_pre_filter_xsobel, false);
-      gtk_widget_set_sensitive(data->chk_full_dp, true);
+      // gtk_widget_set_sensitive(data->rb_pre_filter_normalized, false);
+      // gtk_widget_set_sensitive(data->rb_pre_filter_xsobel, false);
+      // gtk_widget_set_sensitive(data->chk_full_dp, true);
     }
 
     stereo_sgbm->setBlockSize(data->block_size);
@@ -286,7 +286,7 @@ void update_matcher(ChData *data) {
     stereo_sgbm->setSpeckleRange(data->speckle_range);
     stereo_sgbm->setSpeckleWindowSize(data->speckle_window_size);
     stereo_sgbm->setUniquenessRatio(data->uniqueness_ratio);
-    stereo_sgbm->setMode(cv::StereoSGBM::MODE_HH4);
+    stereo_sgbm->setMode(cv::StereoSGBM::MODE_SGBM);
     // stereo_sgbm = data->stereo_matcher_left.dynamicCast<StereoSGBM>();
     if (data->min_depth < 0) {
       data->min_depth = ChData::DEFAULT_MIN_DEPTH;
@@ -358,10 +358,6 @@ void update_matcher(ChData *data) {
   cv::threshold(leftDispMapFloat, dispCheckMask, min_disp, 255,
                 THRESH_BINARY_INV);
   dispCheckMask.convertTo(dispCheckMask, CV_8UC1);
-  cv::imshow("mask", dispCheckMask);
-  std::cout << "\t\tmin " << min << "  " << int(min_disp) << " "
-            << data->stereo_matcher_left->getDisp12MaxDiff() << std::endl;
-  cv::waitKey(1);
   data->cv_image_disparity_left =
       ImgToGradient(data->cv_image_disparity_left, min_disp, max_disp);
   data->cv_image_disp_filtered =
@@ -372,6 +368,8 @@ void update_matcher(ChData *data) {
   data->cv_image_depth =
       ImgToGradient(depthMap, data->min_depth, data->max_depth);
 
+  cv::imshow("mask", data->cv_image_depth_filtered);
+  cv::waitKey(1);
   std::cout << "computed disparity map\n";
   t = clock() - t;
 
@@ -445,35 +443,36 @@ void update_interface(ChData *data, bool recompute) {
   }
 
   gtk_adjustment_set_value(data->adj_block_size, data->block_size);
-  gtk_adjustment_set_value(data->adj_min_disparity, data->min_disparity);
-  gtk_adjustment_set_value(data->adj_num_disparities, data->num_disparities);
-  gtk_adjustment_set_value(data->adj_disp_max_diff, data->disp_12_max_diff);
-  gtk_adjustment_set_value(data->adj_speckle_range, data->speckle_range);
-  gtk_adjustment_set_value(data->adj_speckle_window_size,
-                           data->speckle_window_size);
+  // gtk_adjustment_set_value(data->adj_min_disparity, data->min_disparity);
+  // gtk_adjustment_set_value(data->adj_num_disparities, data->num_disparities);
+  // gtk_adjustment_set_value(data->adj_disp_max_diff, data->disp_12_max_diff);
+  // gtk_adjustment_set_value(data->adj_speckle_range, data->speckle_range);
+  // gtk_adjustment_set_value(data->adj_speckle_window_size,
+  // data->speckle_window_size);
   gtk_adjustment_set_value(data->adj_p1, data->p1);
   gtk_adjustment_set_value(data->adj_p2, data->p2);
-  gtk_adjustment_set_value(data->adj_pre_filter_cap, data->pre_filter_cap);
-  gtk_adjustment_set_value(data->adj_pre_filter_size, data->pre_filter_size);
-  gtk_adjustment_set_value(data->adj_uniqueness_ratio, data->uniqueness_ratio);
-  gtk_adjustment_set_value(data->adj_texture_threshold,
-                           data->texture_threshold);
+  // gtk_adjustment_set_value(data->adj_pre_filter_cap, data->pre_filter_cap);
+  // gtk_adjustment_set_value(data->adj_pre_filter_size, data->pre_filter_size);
+  // gtk_adjustment_set_value(data->adj_uniqueness_ratio,
+  // data->uniqueness_ratio);
+  // gtk_adjustment_set_value(data->adj_texture_threshold,
+  //                          data->texture_threshold);
   gtk_adjustment_set_value(data->adj_scale, data->scale);
   gtk_adjustment_set_value(data->adj_sigma, data->sigmaC);
   gtk_adjustment_set_value(data->adj_lambda, data->lambda);
   gtk_adjustment_set_value(data->adj_min_depth, data->min_depth);
   gtk_adjustment_set_value(data->adj_max_depth, data->max_depth);
 
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->chk_full_dp),
-                               data->mode == StereoSGBM::MODE_HH);
+  // gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->chk_full_dp),
+  //                              data->mode == StereoSGBM::MODE_HH);
 
-  if (data->pre_filter_type == StereoBM::PREFILTER_NORMALIZED_RESPONSE) {
-    gtk_toggle_button_set_active(
-        GTK_TOGGLE_BUTTON(data->rb_pre_filter_normalized), true);
-  } else {
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->rb_pre_filter_xsobel),
-                                 true);
-  }
+  // if (data->pre_filter_type == StereoBM::PREFILTER_NORMALIZED_RESPONSE) {
+  //   gtk_toggle_button_set_active(
+  //       GTK_TOGGLE_BUTTON(data->rb_pre_filter_normalized), true);
+  // } else {
+  //   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->rb_pre_filter_xsobel),
+  //                                true);
+  // }
 
   data->live_update = true;
   if (recompute) {
@@ -1148,7 +1147,7 @@ int main(int argc, char *argv[]) {
   builder = gtk_builder_new();
 
   std::cout << "loading glade file\n";
-  if (!gtk_builder_add_from_file(builder, "StereoTuner.glade", &error)) {
+  if (!gtk_builder_add_from_file(builder, "StereoTuner_new.glade", &error)) {
     std::cout << "Failed to load glade file\n";
     g_warning("%s", error->message);
     g_free(error);

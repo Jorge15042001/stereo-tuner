@@ -4,10 +4,10 @@
   <requires lib="gtk+" version="3.10"/>
   <object class="GtkAdjustment" id="adj_block_size">
     <property name="lower">1</property>
-    <property name="upper">255</property>
+    <property name="upper">20</property>
     <property name="value">5</property>
-    <property name="step-increment">2</property>
-    <property name="page-increment">10</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">1</property>
     <signal name="value-changed" handler="on_adj_block_size_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_disp_max_diff">
@@ -19,7 +19,7 @@
     <signal name="value-changed" handler="on_adj_disp_max_diff_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_lambda">
-    <property name="upper">100000</property>
+    <property name="upper">10000</property>
     <property name="value">10000</property>
     <property name="step-increment">100</property>
     <property name="page-increment">100</property>
@@ -59,7 +59,7 @@
     <signal name="value-changed" handler="on_adj_p1_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_p2">
-    <property name="upper">400</property>
+    <property name="upper">200</property>
     <property name="step-increment">2</property>
     <property name="page-increment">2</property>
     <signal name="value-changed" handler="on_adj_p2_value_changed" swapped="no"/>
@@ -82,53 +82,18 @@
   </object>
   <object class="GtkAdjustment" id="adj_scale">
     <property name="lower">1</property>
-    <property name="upper">32</property>
+    <property name="upper">10</property>
     <property name="value">2</property>
     <property name="step-increment">0.10</property>
     <property name="page-increment">0.10</property>
     <signal name="value-changed" handler="on_adj_scale_value_changed" swapped="no"/>
   </object>
   <object class="GtkAdjustment" id="adj_sigma">
-    <property name="lower">0.5</property>
     <property name="upper">7</property>
     <property name="value">1.5</property>
     <property name="step-increment">0.10</property>
     <property name="page-increment">0.10</property>
     <signal name="value-changed" handler="on_adj_sigma_value_changed" swapped="no"/>
-  </object>
-  <object class="GtkAdjustment" id="adj_speckle_range">
-    <property name="upper">255</property>
-    <property name="step-increment">1</property>
-    <property name="page-increment">1</property>
-    <signal name="value-changed" handler="on_adj_speckle_range_value_changed" swapped="no"/>
-  </object>
-  <object class="GtkAdjustment" id="adj_speckle_window_size">
-    <property name="upper">2048</property>
-    <property name="step-increment">1</property>
-    <property name="page-increment">1</property>
-    <signal name="value-changed" handler="on_adj_speckle_window_size_value_changed" swapped="no"/>
-  </object>
-  <object class="GtkAdjustment" id="adj_texture_threshold">
-    <property name="upper">255</property>
-    <property name="step-increment">1</property>
-    <property name="page-increment">10</property>
-    <signal name="value-changed" handler="on_adj_texture_threshold_value_changed" swapped="no"/>
-  </object>
-  <object class="GtkAdjustment" id="adj_uniqueness_ratio">
-    <property name="upper">255</property>
-    <property name="step-increment">1</property>
-    <property name="page-increment">10</property>
-    <signal name="value-changed" handler="on_adj_uniqueness_ratio_value_changed" swapped="no"/>
-  </object>
-  <object class="GtkAdjustment" id="adjustment1">
-    <property name="upper">100</property>
-    <property name="step-increment">1</property>
-    <property name="page-increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="adjustment2">
-    <property name="upper">100</property>
-    <property name="step-increment">1</property>
-    <property name="page-increment">10</property>
   </object>
   <object class="GtkWindow" id="window1">
     <property name="width-request">700</property>
@@ -144,19 +109,22 @@
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <!-- n-columns=2 n-rows=1 -->
+          <!-- n-columns=1 n-rows=1 -->
           <object class="GtkGrid" id="grid1">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <child>
-              <!-- n-columns=2 n-rows=11 -->
+              <!-- n-columns=2 n-rows=12 -->
               <object class="GtkGrid" id="grid3">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="halign">center</property>
                 <property name="margin-left">20</property>
                 <property name="margin-right">20</property>
                 <property name="margin-top">20</property>
                 <property name="margin-bottom">20</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
                 <property name="column-spacing">3</property>
                 <child>
                   <object class="GtkBox" id="box4">
@@ -210,200 +178,8 @@
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
-                    <property name="top-attach">0</property>
+                    <property name="top-attach">1</property>
                     <property name="width">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label16">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="tooltip-text" translatable="yes">Downscaling factor</property>
-                    <property name="margin-right">10</property>
-                    <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
-                    <property name="label" translatable="yes">scale</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScale" id="sc_scale">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
-                    <property name="adjustment">adj_scale</property>
-                    <property name="lower-stepper-sensitivity">on</property>
-                    <property name="upper-stepper-sensitivity">on</property>
-                    <property name="round-digits">1</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label1">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="tooltip-text" translatable="yes">Downscaling factor</property>
-                    <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
-                    <property name="label" translatable="yes">resolución  (mm)</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label18">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="tooltip-text" translatable="yes">Downscaling factor</property>
-                    <property name="margin-right">10</property>
-                    <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
-                    <property name="label" translatable="yes">Min depth (mm)</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScale" id="sc_min_depth1">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
-                    <property name="adjustment">adjustment2</property>
-                    <property name="lower-stepper-sensitivity">on</property>
-                    <property name="upper-stepper-sensitivity">on</property>
-                    <property name="round-digits">1</property>
-                    <property name="digits">2</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScale" id="sc_min_depth">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
-                    <property name="adjustment">adj_min_depth</property>
-                    <property name="lower-stepper-sensitivity">on</property>
-                    <property name="upper-stepper-sensitivity">on</property>
-                    <property name="round-digits">1</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScale" id="sc_max_depth">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
-                    <property name="adjustment">adj_max_depth</property>
-                    <property name="lower-stepper-sensitivity">on</property>
-                    <property name="upper-stepper-sensitivity">on</property>
-                    <property name="round-digits">1</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">4</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label19">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="tooltip-text" translatable="yes">Downscaling factor</property>
-                    <property name="margin-right">10</property>
-                    <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
-                    <property name="label" translatable="yes">Max depth (mm)</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">4</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScale" id="sc_p1">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
-                    <property name="adjustment">adj_p1</property>
-                    <property name="round-digits">1</property>
-                    <property name="digits">0</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">6</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScale" id="sc_p2">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
-                    <property name="adjustment">adj_p2</property>
-                    <property name="round-digits">1</property>
-                    <property name="digits">0</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">7</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label8">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="tooltip-text" translatable="yes">The first parameter controlling
-                      the disparity smoothness. See below.</property>
-                    <property name="margin-right">10</property>
-                    <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
-                    <property name="label" translatable="yes">P1</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">6</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label9">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="tooltip-text" translatable="yes">The second parameter
-                      controlling the disparity smoothness. The larger the values are, the smoother
-                      the disparity is. P1 is the penalty on the disparity change by plus or minus 1
-                      between neighbor pixels. P2 is the penalty on the disparity change by more
-                      than 1 between neighbor pixels. The algorithm requires P2 &gt; P1 . See
-                      stereo_match.cpp sample where some reasonably good P1 and P2 values are shown
-                      (like 8*number_of_image_channels*SADWindowSize*SADWindowSize and
-                      32*number_of_image_channels*SADWindowSize*SADWindowSize , respectively).</property>
-                    <property name="margin-right">10</property>
-                    <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
-                    <property name="label" translatable="yes">P2</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">7</property>
                   </packing>
                 </child>
                 <child>
@@ -454,47 +230,203 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="label17">
+                  <object class="GtkLabel" id="label9">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">The second parameter
+                      controlling the disparity smoothness. The larger the values are, the smoother
+                      the disparity is. P1 is the penalty on the disparity change by plus or minus 1
+                      between neighbor pixels. P2 is the penalty on the disparity change by more
+                      than 1 between neighbor pixels. The algorithm requires P2 &gt; P1 . See
+                      stereo_match.cpp sample where some reasonably good P1 and P2 values are shown
+                      (like 8*number_of_image_channels*SADWindowSize*SADWindowSize and
+                      32*number_of_image_channels*SADWindowSize*SADWindowSize , respectively).</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">3</property>
+                    <property name="label" translatable="yes">P2</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">7</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label8">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">The first parameter controlling
+                      the disparity smoothness. See below.</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">3</property>
+                    <property name="label" translatable="yes">P1</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label19">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="tooltip-text" translatable="yes">Downscaling factor</property>
                     <property name="margin-right">10</property>
                     <property name="margin-top">3</property>
                     <property name="margin-bottom">3</property>
-                    <property name="label" translatable="yes">Lambda</property>
+                    <property name="label" translatable="yes">Max depth (mm)</property>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
-                    <property name="top-attach">10</property>
+                    <property name="top-attach">5</property>
                   </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="GtkLabel" id="label18">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Downscaling factor</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">3</property>
+                    <property name="label" translatable="yes">Min depth (mm)</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">4</property>
+                  </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="GtkLabel" id="label1">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Downscaling factor</property>
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">3</property>
+                    <property name="label" translatable="yes">window size</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">3</property>
+                  </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="GtkLabel" id="label16">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Downscaling factor</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">3</property>
+                    <property name="label" translatable="yes">scale</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">2</property>
+                  </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="GtkScale" id="sc_p2">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">3</property>
+                    <property name="adjustment">adj_p2</property>
+                    <property name="round-digits">1</property>
+                    <property name="digits">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">7</property>
+                  </packing>
                 </child>
-              </object>
-              <packing>
-                <property name="left-attach">0</property>
-                <property name="top-attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox" id="ImagesBox">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkScale" id="sc_p1">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">3</property>
+                    <property name="adjustment">adj_p1</property>
+                    <property name="round-digits">1</property>
+                    <property name="digits">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="sc_max_depth">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">3</property>
+                    <property name="adjustment">adj_max_depth</property>
+                    <property name="lower-stepper-sensitivity">on</property>
+                    <property name="upper-stepper-sensitivity">on</property>
+                    <property name="round-digits">1</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="sc_min_depth">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">3</property>
+                    <property name="adjustment">adj_min_depth</property>
+                    <property name="lower-stepper-sensitivity">on</property>
+                    <property name="upper-stepper-sensitivity">on</property>
+                    <property name="round-digits">1</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="sc_block_size">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">3</property>
+                    <property name="adjustment">adj_block_size</property>
+                    <property name="lower-stepper-sensitivity">on</property>
+                    <property name="upper-stepper-sensitivity">on</property>
+                    <property name="round-digits">1</property>
+                    <property name="digits">0</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScale" id="sc_scale">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">3</property>
+                    <property name="adjustment">adj_scale</property>
+                    <property name="lower-stepper-sensitivity">on</property>
+                    <property name="upper-stepper-sensitivity">on</property>
+                    <property name="round-digits">1</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">2</property>
+                  </packing>
+                </child>
                 <child>
                   <object class="GtkBox" id="images_rgb">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="margin-bottom">20</property>
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
@@ -522,7 +454,11 @@
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="margin-top">20</property>
-                            <property name="label" translatable="yes">Left image</property>
+                            <property name="label" translatable="yes">Imagen izquierda</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                              <attribute name="scale" value="1.5"/>
+                            </attributes>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -564,7 +500,11 @@
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="margin-top">20</property>
-                            <property name="label" translatable="yes">Right image</property>
+                            <property name="label" translatable="yes">Imagen derecha</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                              <attribute name="scale" value="1.5"/>
+                            </attributes>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -581,15 +521,32 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
+                    <property name="width">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label17">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Downscaling factor</property>
+                    <property name="margin-right">10</property>
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">3</property>
+                    <property name="label" translatable="yes">Lambda</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">10</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkBox" id="Images_disp">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="margin-bottom">20</property>
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
@@ -617,7 +574,11 @@
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="margin-top">20</property>
-                            <property name="label" translatable="yes">Disparity unfiltered</property>
+                            <property name="label" translatable="yes">Mapa de disparidad</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                              <attribute name="scale" value="1.5"/>
+                            </attributes>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -632,59 +593,6 @@
                         <property name="position">0</property>
                       </packing>
                     </child>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="margin-left">20</property>
-                        <property name="margin-right">20</property>
-                        <property name="margin-top">10</property>
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkImage" id="image_disparity_filtered">
-                            <property name="width-request">320</property>
-                            <property name="height-request">240</property>
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="stock">gtk-missing-image</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="label23">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="margin-top">20</property>
-                            <property name="label" translatable="yes">Disparity filtered</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="Images_depth">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
@@ -712,7 +620,69 @@
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="margin-top">20</property>
-                            <property name="label" translatable="yes">Depth unfiltered</property>
+                            <property name="label" translatable="yes">Mapa de profundidad</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                              <attribute name="scale" value="1.5"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">8</property>
+                    <property name="width">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="Images_depth">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">center</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="margin-left">20</property>
+                        <property name="margin-right">20</property>
+                        <property name="margin-top">10</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkImage" id="image_disparity_filtered">
+                            <property name="width-request">320</property>
+                            <property name="height-request">240</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="stock">gtk-missing-image</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label23">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="margin-top">20</property>
+                            <property name="label" translatable="yes">Mapa de dispariad (filtrado)</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                              <attribute name="scale" value="1.5"/>
+                            </attributes>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -754,8 +724,11 @@
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="margin-top">20</property>
-                            <property name="label" translatable="yes">Depth filtered
-</property>
+                            <property name="label" translatable="yes">Mapa de profundidad (filtrado)</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                              <attribute name="scale" value="1.5"/>
+                            </attributes>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -772,14 +745,14 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">11</property>
+                    <property name="width">2</property>
                   </packing>
                 </child>
               </object>
               <packing>
-                <property name="left-attach">1</property>
+                <property name="left-attach">0</property>
                 <property name="top-attach">0</property>
               </packing>
             </child>
@@ -809,5 +782,39 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkAdjustment" id="adj_speckle_range">
+    <property name="upper">255</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">1</property>
+    <signal name="value-changed" handler="on_adj_speckle_range_value_changed" swapped="no"/>
+  </object>
+  <object class="GtkAdjustment" id="adj_speckle_window_size">
+    <property name="upper">2048</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">1</property>
+    <signal name="value-changed" handler="on_adj_speckle_window_size_value_changed" swapped="no"/>
+  </object>
+  <object class="GtkAdjustment" id="adj_texture_threshold">
+    <property name="upper">255</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+    <signal name="value-changed" handler="on_adj_texture_threshold_value_changed" swapped="no"/>
+  </object>
+  <object class="GtkAdjustment" id="adj_uniqueness_ratio">
+    <property name="upper">255</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+    <signal name="value-changed" handler="on_adj_uniqueness_ratio_value_changed" swapped="no"/>
+  </object>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment2">
+    <property name="upper">100</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
   </object>
 </interface>
